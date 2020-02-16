@@ -6,8 +6,8 @@ import com.bolyartech.forge.server.misc.MimeTypeResolverImpl
 import com.bolyartech.forge.server.module.HttpModule
 import com.bolyartech.forge.server.route.Route
 import com.bolyartech.forge.server.route.RouteImpl
-import org.example.kforge.dagger.StaticFilesDir
 import org.example.kforge.modules.main.endpoints.RootWp
+import org.example.kforgepro.dagger.StaticFilesDir
 import java.util.*
 import javax.inject.Inject
 

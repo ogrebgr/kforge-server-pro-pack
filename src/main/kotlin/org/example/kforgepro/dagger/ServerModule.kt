@@ -1,4 +1,4 @@
-package org.example.kforge.dagger
+package org.example.kforgepro.dagger
 
 import com.bolyartech.forge.server.handler.RouteHandler
 import com.bolyartech.totoproverka3.server.main.NotFoundResponse

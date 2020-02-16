@@ -1,4 +1,4 @@
-package org.example.kforge
+package org.example.kforgepro
 
 import com.bolyartech.forge.server.BaseServletDefaultImpl
 import com.bolyartech.forge.server.handler.RouteHandler

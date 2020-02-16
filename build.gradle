@@ -16,8 +16,15 @@ repositories {
     jcenter()
 }
 
+
+application {
+    mainClassName = 'org.example.kforgepro.ServerStarterKt'
+}
+
+
 dependencies {
-    compile 'mysql:mysql-connector-java:5.1.46'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.10'
+    compile 'com.bolyartech.scram_sasl:scram_sasl:2.0.1'
     compile 'com.google.code.gson:gson:2.8.5'
     compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
     compile 'org.slf4j:slf4j-api:1.7.21'

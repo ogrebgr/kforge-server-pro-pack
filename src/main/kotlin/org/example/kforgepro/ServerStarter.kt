@@ -1,4 +1,4 @@
-package org.example.kforge
+package org.example.kforgepro
 
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.joran.JoranConfigurator
@@ -11,9 +11,9 @@ import com.bolyartech.forge.server.jetty.ForgeJettyConfigurationLoaderFile
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.DefaultParser
 import org.apache.commons.cli.Options
-import org.example.kforge.dagger.DaggerServerDaggerComponent
-import org.example.kforge.dagger.DbDaggerModule
-import org.example.kforge.dagger.ServerModule
+import org.example.kforgepro.dagger.DaggerServerDaggerComponent
+import org.example.kforgepro.dagger.DbDaggerModule
+import org.example.kforgepro.dagger.ServerModule
 import org.slf4j.LoggerFactory
 import java.io.File
 import kotlin.system.exitProcess

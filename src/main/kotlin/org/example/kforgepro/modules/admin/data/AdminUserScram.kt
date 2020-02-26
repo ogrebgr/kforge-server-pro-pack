@@ -1,4 +1,4 @@
-package org.example.kforgepro.module.admin.data
+package org.example.kforgepro.modules.admin.data
 
 import com.bolyartech.scram_sasl.common.ScramUtils
 import setValue
@@ -70,7 +70,8 @@ interface AdminUserScramDbh {
     fun deleteAll(dbc: Connection): Int
 }
 
-class AdminUserScramDbhImpl @Inject constructor() : AdminUserScramDbh {
+class AdminUserScramDbhImpl @Inject constructor() :
+    AdminUserScramDbh {
     private val SQL_INSERT =
         """INSERT INTO "kforge_propack"."admin_user_scram" ("user", "username", "salt", "server_key", "stored_key", "iterations", "username_lc") VALUES (?, ?, ?, ?, ?, ?, ?)"""
     private val SQL_SELECT_BY_ID =

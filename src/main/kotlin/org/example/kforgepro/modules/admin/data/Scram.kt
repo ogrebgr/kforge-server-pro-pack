@@ -1,4 +1,4 @@
-package org.example.kforgepro.module.admin.data
+package org.example.kforgepro.modules.admin.data
 
 import com.bolyartech.scram_sasl.common.ScramUtils
 import com.google.common.base.Strings
@@ -10,12 +10,12 @@ import java.sql.SQLException
 
 
 data class Scram(
-    private val user: Int,
-    private val username: String,
-    private val salt: ByteArray,
-    private val serverKey: ByteArray,
-    private val storedKey: ByteArray,
-    private val iterations: Int
+    val user: Int,
+    val username: String,
+    val salt: ByteArray,
+    val serverKey: ByteArray,
+    val storedKey: ByteArray,
+    val iterations: Int
 ) {
 
     init {
@@ -26,9 +26,9 @@ data class Scram(
     }
 
     companion object {
-        private const val DEFAULT_ITERATIONS = 4096
-        private const val DEFAULT_HMAC = "HmacSHA512"
-        private const val DEFAULT_DIGEST = "SHA-512"
+        const val DEFAULT_ITERATIONS = 4096
+        const val DEFAULT_HMAC = "HmacSHA512"
+        const val DEFAULT_DIGEST = "SHA-512"
 
         fun isValidUsername(username: String): Boolean {
             return username.matches(Regex("^[\\p{L}][\\p{L}\\p{N} _]{1,48}[\\p{L}\\p{N}]$"))
@@ -110,7 +110,7 @@ class ScramDbhImpl(private val tableName: String) :
     }
 
     override fun loadByUsername(dbc: Connection, username: String): Scram? {
-        val sql = "SELECT user, salt, server_key, stored_key, iterations " +
+        val sql = "SELECT \"user\", salt, server_key, stored_key, iterations " +
                 "FROM " + tableName +
                 " WHERE username = ?"
         dbc.prepareStatement(sql).use { psLoad ->

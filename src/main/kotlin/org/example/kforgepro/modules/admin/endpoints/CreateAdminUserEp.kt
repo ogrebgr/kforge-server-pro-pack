@@ -1,4 +1,4 @@
-package org.example.kforgepro.module.admin.endpoints
+package org.example.kforgepro.modules.admin.endpoints
 
 import com.bolyartech.forge.server.db.DbPool
 import com.bolyartech.forge.server.handler.ForgeDbEndpoint
@@ -8,8 +8,8 @@ import com.bolyartech.forge.server.response.forge.MissingParametersResponse
 import com.bolyartech.forge.server.response.forge.OkResponse
 import com.bolyartech.forge.server.route.RequestContext
 import org.example.kforgepro.dagger.AdminScramDbh
-import org.example.kforgepro.module.admin.AdminResponseCodes
-import org.example.kforgepro.module.admin.data.*
+import org.example.kforgepro.modules.admin.AdminResponseCodes
+import org.example.kforgepro.modules.admin.data.*
 import java.sql.Connection
 import javax.inject.Inject
 

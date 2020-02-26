@@ -7,7 +7,7 @@ import com.bolyartech.forge.server.module.HttpModule
 import com.bolyartech.totoproverka3.server.main.MainModule
 import org.example.kforgepro.dagger.InternalServerErrorHandler
 import org.example.kforgepro.dagger.NotFoundHandler
-import org.example.kforgepro.module.admin.AdminModule
+import org.example.kforgepro.modules.admin.AdminModule
 import java.util.*
 import javax.inject.Inject
 import javax.servlet.http.HttpServlet

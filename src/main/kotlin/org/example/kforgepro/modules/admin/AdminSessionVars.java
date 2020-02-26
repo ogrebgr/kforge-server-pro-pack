@@ -1,4 +1,4 @@
-package org.example.kforgepro.module.admin;
+package org.example.kforgepro.modules.admin;
 
 public class AdminSessionVars {
     public static final String VAR_USER = "mod_admin__user";

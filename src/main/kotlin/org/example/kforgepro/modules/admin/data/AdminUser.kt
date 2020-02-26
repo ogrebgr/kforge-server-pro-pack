@@ -1,4 +1,4 @@
-package org.example.kforgepro.module.admin.data
+package org.example.kforgepro.modules.admin.data
 
 import setValue
 import java.sql.Connection
@@ -55,7 +55,8 @@ interface AdminUserDbh {
     fun deleteAll(dbc: Connection): Int
 }
 
-class AdminUserDbhImpl @Inject constructor() : AdminUserDbh {
+class AdminUserDbhImpl @Inject constructor() :
+    AdminUserDbh {
     private val SQL_INSERT =
         """INSERT INTO "kforge_propack"."admin_users" ("is_disabled", "is_superadmin", "name") VALUES (?, ?, ?)"""
     private val SQL_SELECT_BY_ID =

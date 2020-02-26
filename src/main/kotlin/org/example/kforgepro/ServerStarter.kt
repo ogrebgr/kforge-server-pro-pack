@@ -21,6 +21,7 @@ import kotlin.system.exitProcess
 internal var logger: org.slf4j.Logger = LoggerFactory.getLogger("org.example.kforge.server")
 
 fun main(args: Array<String>) {
+    Class.forName("org.postgresql.Driver")
     val cmd: CommandLine = parseCommandLine(args)
 
     var jettyConfigPath = cmd.getOptionValue("config-file")

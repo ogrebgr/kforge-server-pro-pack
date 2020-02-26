@@ -1,12 +1,12 @@
-package org.example.kforgepro.module.admin.endpoints
+package org.example.kforgepro.modules.admin.endpoints
 
 import com.bolyartech.forge.server.handler.ForgeEndpoint
 import com.bolyartech.forge.server.response.ResponseException
 import com.bolyartech.forge.server.response.forge.ForgeResponse
 import com.bolyartech.forge.server.route.RequestContext
-import org.example.kforgepro.module.admin.AdminResponseCodes
-import org.example.kforgepro.module.admin.AdminSessionVars
-import org.example.kforgepro.module.admin.data.AdminUser
+import org.example.kforgepro.modules.admin.AdminResponseCodes
+import org.example.kforgepro.modules.admin.AdminSessionVars
+import org.example.kforgepro.modules.admin.data.AdminUser
 
 abstract class AdminEndpoint : ForgeEndpoint() {
     @Throws(ResponseException::class)
@@ -15,7 +15,9 @@ abstract class AdminEndpoint : ForgeEndpoint() {
     @Throws(ResponseException::class)
     override fun handle(ctx: RequestContext): ForgeResponse {
         val session = ctx.session
-        val user = session.getVar<AdminUser>(AdminSessionVars.VAR_USER)
+        val user = session.getVar<AdminUser>(
+            AdminSessionVars.VAR_USER
+        )
 
         return if (user != null) {
             handle(ctx, user)

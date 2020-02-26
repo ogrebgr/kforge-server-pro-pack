@@ -8,7 +8,7 @@ import com.bolyartech.forge.server.db.FileDbConfigurationLoader
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import org.example.kforgepro.module.admin.data.*
+import org.example.kforgepro.modules.admin.data.*
 import javax.inject.Qualifier
 import javax.inject.Singleton
 

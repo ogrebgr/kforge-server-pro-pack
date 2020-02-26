@@ -1,6 +1,8 @@
-package org.example.kforgepro.module.admin
+package org.example.kforgepro.modules.admin
 
-enum class AdminResponseCodes(val code: Int) {
+import com.bolyartech.forge.server.response.forge.ForgeResponseCode
+
+enum class AdminResponseCodes(private val _code: Int) : ForgeResponseCode {
     /**
      * Registration related codes
      */
@@ -16,5 +18,9 @@ enum class AdminResponseCodes(val code: Int) {
     INVALID_LOGIN(-12), // user + password does not match valid account
     NOT_LOGGED_IN(-13), // not logged in
 
-    INSUFFICIENT_PRIVILEGES(-14)
+    INSUFFICIENT_PRIVILEGES(-14);
+
+    override fun getCode(): Int {
+        return _code
+    }
 }

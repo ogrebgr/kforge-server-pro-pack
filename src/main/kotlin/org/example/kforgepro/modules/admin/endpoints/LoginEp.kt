@@ -32,9 +32,11 @@ class LoginEp @Inject constructor(
     @AdminScramDbh private val scramDbh: ScramDbh
 ) :
     ForgeDbEndpoint(dbPool) {
+
+    private val PAUSE_AFTER_UNSUCCESSFUL_LOGIN_MILLIS = 500L
+
     private val PARAM_STEP = "step"
     private val PARAM_DATA = "data"
-
 
     override fun handleForge(ctx: RequestContext, dbc: Connection): ForgeResponse {
         val stepStr = ctx.getFromPost(PARAM_STEP)
@@ -132,6 +134,7 @@ class LoginEp @Inject constructor(
                     session.setVar(AdminSessionVars.VAR_SCRAM_FUNC, scram)
                     OkResponse(first)
                 } else {
+                    Thread.sleep(PAUSE_AFTER_UNSUCCESSFUL_LOGIN_MILLIS)
                     ForgeResponse(AdminResponseCodes.INVALID_LOGIN, "Invalid Login")
                 }
             } catch (e: SQLException) {

@@ -58,22 +58,22 @@ interface AdminUserDbh {
 class AdminUserDbhImpl @Inject constructor() :
     AdminUserDbh {
     private val SQL_INSERT =
-        """INSERT INTO "kforge_propack"."admin_users" ("is_disabled", "is_superadmin", "name") VALUES (?, ?, ?)"""
+        """INSERT INTO "admin_users" ("is_disabled", "is_superadmin", "name") VALUES (?, ?, ?)"""
     private val SQL_SELECT_BY_ID =
-        """SELECT "is_disabled", "is_superadmin", "name" FROM "kforge_propack"."admin_users" WHERE id = ?"""
+        """SELECT "is_disabled", "is_superadmin", "name" FROM "admin_users" WHERE id = ?"""
     private val SQL_SELECT_ALL =
-        """SELECT "id", "is_disabled", "is_superadmin", "name" FROM "kforge_propack"."admin_users""""
+        """SELECT "id", "is_disabled", "is_superadmin", "name" FROM "admin_users""""
     private val SQL_UPDATE =
-        """UPDATE "kforge_propack"."admin_users" SET "is_disabled" = ?, "is_superadmin" = ?, "name" = ? WHERE id = ?"""
+        """UPDATE "admin_users" SET "is_disabled" = ?, "is_superadmin" = ?, "name" = ? WHERE id = ?"""
     private val SQL_SELECT_ID_GREATER =
-        """SELECT "id", "is_disabled", "is_superadmin", "name" FROM "kforge_propack"."admin_users" WHERE id > ?"""
+        """SELECT "id", "is_disabled", "is_superadmin", "name" FROM "admin_users" WHERE id > ?"""
     private val SQL_SELECT_ID_LOWER =
-        """SELECT "id", "is_disabled", "is_superadmin", "name" FROM "kforge_propack"."admin_users" WHERE id < ?"""
+        """SELECT "id", "is_disabled", "is_superadmin", "name" FROM "admin_users" WHERE id < ?"""
     private val SQL_SELECT_LAST =
-        """SELECT "id", "is_disabled", "is_superadmin", "name" FROM "kforge_propack"."admin_users" ORDER BY id DESC"""
-    private val SQL_COUNT = """SELECT COUNT(id) FROM "kforge_propack"."admin_users""""
-    private val SQL_DELETE = """DELETE FROM "kforge_propack"."admin_users" WHERE id = ?"""
-    private val SQL_DELETE_ALL = """DELETE FROM "kforge_propack"."admin_users""""
+        """SELECT "id", "is_disabled", "is_superadmin", "name" FROM "admin_users" ORDER BY id DESC"""
+    private val SQL_COUNT = """SELECT COUNT(id) FROM "admin_users""""
+    private val SQL_DELETE = """DELETE FROM "admin_users" WHERE id = ?"""
+    private val SQL_DELETE_ALL = """DELETE FROM "admin_users""""
 
     @Throws(SQLException::class)
     override fun createNew(dbc: Connection, is_disabled: Boolean, is_superadmin: Boolean, name: String): AdminUser {

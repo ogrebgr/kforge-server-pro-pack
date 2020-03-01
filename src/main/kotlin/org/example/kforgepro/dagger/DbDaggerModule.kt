@@ -50,6 +50,9 @@ abstract class DbBinds {
 
     @Binds
     internal abstract fun provideAdminUserScramDbh(impl: AdminUserScramDbhImpl): AdminUserScramDbh
+
+    @Binds
+    internal abstract fun provideAdminUserExportedViewDbh(impl: AdminUserExportedViewDbhImpl): AdminUserExportedViewDbh
 }
 
 

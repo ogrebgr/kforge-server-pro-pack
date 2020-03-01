@@ -46,6 +46,9 @@ interface AdminUserScramDbh {
     fun loadById(dbc: Connection, id: Int): AdminUserScram?
 
     @Throws(SQLException::class)
+    fun loadByUserId(dbc: Connection, user: Int): AdminUserScram?
+
+    @Throws(SQLException::class)
     fun loadAll(dbc: Connection): List<AdminUserScram>
 
     @Throws(SQLException::class)
@@ -73,22 +76,24 @@ interface AdminUserScramDbh {
 class AdminUserScramDbhImpl @Inject constructor() :
     AdminUserScramDbh {
     private val SQL_INSERT =
-        """INSERT INTO "kforge_propack"."admin_user_scram" ("user", "username", "salt", "server_key", "stored_key", "iterations", "username_lc") VALUES (?, ?, ?, ?, ?, ?, ?)"""
+        """INSERT INTO "admin_user_scram" ("user", "username", "salt", "server_key", "stored_key", "iterations", "username_lc") VALUES (?, ?, ?, ?, ?, ?, ?)"""
     private val SQL_SELECT_BY_ID =
-        """SELECT "user", "username", "salt", "server_key", "stored_key", "iterations", "username_lc" FROM "kforge_propack"."admin_user_scram" WHERE id = ?"""
+        """SELECT "user", "username", "salt", "server_key", "stored_key", "iterations", "username_lc" FROM "admin_user_scram" WHERE id = ?"""
+    private val SQL_SELECT_BY_USER =
+        """SELECT "id", "username", "salt", "server_key", "stored_key", "iterations", "username_lc" FROM "admin_user_scram" WHERE "user" = ?"""
     private val SQL_SELECT_ALL =
-        """SELECT "id", "user", "username", "salt", "server_key", "stored_key", "iterations", "username_lc" FROM "kforge_propack"."admin_user_scram""""
+        """SELECT "id", "user", "username", "salt", "server_key", "stored_key", "iterations", "username_lc" FROM "admin_user_scram""""
     private val SQL_UPDATE =
-        """UPDATE "kforge_propack"."admin_user_scram" SET "user" = ?, "username" = ?, "salt" = ?, "server_key" = ?, "stored_key" = ?, "iterations" = ?, "username_lc" = ? WHERE id = ?"""
+        """UPDATE "admin_user_scram" SET "user" = ?, "username" = ?, "salt" = ?, "server_key" = ?, "stored_key" = ?, "iterations" = ?, "username_lc" = ? WHERE id = ?"""
     private val SQL_SELECT_ID_GREATER =
-        """SELECT "id", "user", "username", "salt", "server_key", "stored_key", "iterations", "username_lc" FROM "kforge_propack"."admin_user_scram" WHERE id > ?"""
+        """SELECT "id", "user", "username", "salt", "server_key", "stored_key", "iterations", "username_lc" FROM "admin_user_scram" WHERE id > ?"""
     private val SQL_SELECT_ID_LOWER =
-        """SELECT "id", "user", "username", "salt", "server_key", "stored_key", "iterations", "username_lc" FROM "kforge_propack"."admin_user_scram" WHERE id < ?"""
+        """SELECT "id", "user", "username", "salt", "server_key", "stored_key", "iterations", "username_lc" FROM "admin_user_scram" WHERE id < ?"""
     private val SQL_SELECT_LAST =
-        """SELECT "id", "user", "username", "salt", "server_key", "stored_key", "iterations", "username_lc" FROM "kforge_propack"."admin_user_scram" ORDER BY id DESC"""
-    private val SQL_COUNT = """SELECT COUNT(id) FROM "kforge_propack"."admin_user_scram""""
-    private val SQL_DELETE = """DELETE FROM "kforge_propack"."admin_user_scram" WHERE id = ?"""
-    private val SQL_DELETE_ALL = """DELETE FROM "kforge_propack"."admin_user_scram""""
+        """SELECT "id", "user", "username", "salt", "server_key", "stored_key", "iterations", "username_lc" FROM "admin_user_scram" ORDER BY id DESC"""
+    private val SQL_COUNT = """SELECT COUNT(id) FROM "admin_user_scram""""
+    private val SQL_DELETE = """DELETE FROM "admin_user_scram" WHERE id = ?"""
+    private val SQL_DELETE_ALL = """DELETE FROM "admin_user_scram""""
 
 
     override fun createNew(
@@ -165,6 +170,28 @@ class AdminUserScramDbhImpl @Inject constructor() :
                     AdminUserScram(
                         id,
                         it.getInt(1),
+                        it.getString(2),
+                        it.getBytes(3),
+                        it.getBytes(4),
+                        it.getBytes(5),
+                        it.getInt(6)
+                    )
+                } else {
+                    null
+                }
+            }
+        }
+    }
+
+    override fun loadByUserId(dbc: Connection, user: Int): AdminUserScram? {
+        dbc.prepareStatement(SQL_SELECT_BY_USER).use {
+            it.setValue(1, user)
+
+            it.executeQuery().use {
+                return if (it.next()) {
+                    AdminUserScram(
+                        it.getInt(1),
+                        user,
                         it.getString(2),
                         it.getBytes(3),
                         it.getBytes(4),

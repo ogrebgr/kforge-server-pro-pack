@@ -53,6 +53,13 @@ interface AdminUserDbh {
 
     @Throws(SQLException::class)
     fun deleteAll(dbc: Connection): Int
+
+    @Throws(SQLException::class)
+    fun changeIsSuperAdmin(dbc: Connection, userId: Int, isSuperAdmin: Boolean): Boolean
+
+    @Throws(SQLException::class)
+    fun changeIsDisabled(dbc: Connection, userId: Int, isDisabled: Boolean): Boolean
+
 }
 
 class AdminUserDbhImpl @Inject constructor() :
@@ -74,6 +81,11 @@ class AdminUserDbhImpl @Inject constructor() :
     private val SQL_COUNT = """SELECT COUNT(id) FROM "admin_users""""
     private val SQL_DELETE = """DELETE FROM "admin_users" WHERE id = ?"""
     private val SQL_DELETE_ALL = """DELETE FROM "admin_users""""
+    private val SQL_CHANGE_SUPER_ADMIN =
+        """UPDATE "admin_users" SET ""is_superadmin" = ? WHERE id = ?"""
+    private val SQL_CHANGE_DISABLED =
+        """UPDATE "admin_users" SET ""is_disabled" = ? WHERE id = ?"""
+
 
     @Throws(SQLException::class)
     override fun createNew(dbc: Connection, is_disabled: Boolean, is_superadmin: Boolean, name: String): AdminUser {
@@ -264,6 +276,24 @@ class AdminUserDbhImpl @Inject constructor() :
     override fun deleteAll(dbc: Connection): Int {
         dbc.prepareStatement(SQL_DELETE_ALL).use {
             return it.executeUpdate()
+        }
+    }
+
+    override fun changeIsSuperAdmin(dbc: Connection, userId: Int, isSuperAdmin: Boolean): Boolean {
+        dbc.prepareStatement(SQL_UPDATE).use {
+            it.setValue(1, isSuperAdmin)
+            it.setValue(2, userId)
+
+            return it.executeUpdate() > 0
+        }
+    }
+
+    override fun changeIsDisabled(dbc: Connection, userId: Int, isDisabled: Boolean): Boolean {
+        dbc.prepareStatement(SQL_UPDATE).use {
+            it.setValue(1, isDisabled)
+            it.setValue(2, userId)
+
+            return it.executeUpdate() > 0
         }
     }
 }

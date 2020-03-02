@@ -25,7 +25,7 @@ import java.sql.SQLException
 import javax.inject.Inject
 
 
-class LoginEp @Inject constructor(
+class AdminLoginEp @Inject constructor(
     dbPool: DbPool,
     private val gson: Gson,
     private val adminUserDbh: AdminUserDbh,

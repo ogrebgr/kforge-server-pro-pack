@@ -4,10 +4,7 @@ import com.bolyartech.forge.server.HttpMethod
 import com.bolyartech.forge.server.module.HttpModule
 import com.bolyartech.forge.server.route.Route
 import com.bolyartech.forge.server.route.RouteImpl
-import org.example.kforgepro.modules.admin.endpoints.AdminLoginEp
-import org.example.kforgepro.modules.admin.endpoints.AdminUserLoadEp
-import org.example.kforgepro.modules.admin.endpoints.AdminUsersListEp
-import org.example.kforgepro.modules.admin.endpoints.CreateAdminUserEp
+import org.example.kforgepro.modules.admin.endpoints.*
 import java.util.*
 import javax.inject.Inject
 
@@ -15,7 +12,9 @@ class AdminModule @Inject constructor(
     private val createAdminUserEp: CreateAdminUserEp,
     private val adminLoginEp: AdminLoginEp,
     private val adminUsersListEp: AdminUsersListEp,
-    private val adminUserLoadEp: AdminUserLoadEp
+    private val adminUserLoadEp: AdminUserLoadEp,
+    private val adminStoreDisableEp: AdminStoreDisableEp,
+    private val adminStoreSuperAdminEp: AdminStoreSuperAdminEp
 ) : HttpModule {
     private val MODULE_SYSTEM_NAME = "admin"
     private val MODULE_VERSION_CODE = 1
@@ -28,6 +27,9 @@ class AdminModule @Inject constructor(
         ret.add(RouteImpl(HttpMethod.POST, "$PATH_PREFIX/login", adminLoginEp))
         ret.add(RouteImpl(HttpMethod.GET, "$PATH_PREFIX/user_list", adminUsersListEp))
         ret.add(RouteImpl(HttpMethod.GET, "$PATH_PREFIX/user", adminUserLoadEp))
+        ret.add(RouteImpl(HttpMethod.POST, "$PATH_PREFIX/admin_user_disable", adminStoreDisableEp))
+        ret.add(RouteImpl(HttpMethod.POST, "$PATH_PREFIX/admin_user_super_admin", adminStoreSuperAdminEp))
+
         return ret
     }
 

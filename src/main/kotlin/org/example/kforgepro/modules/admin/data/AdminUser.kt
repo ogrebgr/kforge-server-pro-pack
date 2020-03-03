@@ -82,9 +82,9 @@ class AdminUserDbhImpl @Inject constructor() :
     private val SQL_DELETE = """DELETE FROM "admin_users" WHERE id = ?"""
     private val SQL_DELETE_ALL = """DELETE FROM "admin_users""""
     private val SQL_CHANGE_SUPER_ADMIN =
-        """UPDATE "admin_users" SET ""is_superadmin" = ? WHERE id = ?"""
+        """UPDATE "admin_users" SET "is_superadmin" = ? WHERE id = ?"""
     private val SQL_CHANGE_DISABLED =
-        """UPDATE "admin_users" SET ""is_disabled" = ? WHERE id = ?"""
+        """UPDATE "admin_users" SET "is_disabled" = ? WHERE id = ?"""
 
 
     @Throws(SQLException::class)
@@ -280,7 +280,7 @@ class AdminUserDbhImpl @Inject constructor() :
     }
 
     override fun changeIsSuperAdmin(dbc: Connection, userId: Int, isSuperAdmin: Boolean): Boolean {
-        dbc.prepareStatement(SQL_UPDATE).use {
+        dbc.prepareStatement(SQL_CHANGE_SUPER_ADMIN).use {
             it.setValue(1, isSuperAdmin)
             it.setValue(2, userId)
 
@@ -289,7 +289,7 @@ class AdminUserDbhImpl @Inject constructor() :
     }
 
     override fun changeIsDisabled(dbc: Connection, userId: Int, isDisabled: Boolean): Boolean {
-        dbc.prepareStatement(SQL_UPDATE).use {
+        dbc.prepareStatement(SQL_CHANGE_DISABLED).use {
             it.setValue(1, isDisabled)
             it.setValue(2, userId)
 

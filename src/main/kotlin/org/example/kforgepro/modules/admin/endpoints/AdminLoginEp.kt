@@ -78,8 +78,11 @@ class AdminLoginEp @Inject constructor(
                             AdminSessionVars.VAR_SCRAM_DATA
                         )
                         val user: AdminUser? = adminUserDbh.loadById(dbc, scramData.user)
+                        if (user!!.isDisabled) {
+                            ForgeResponse(AdminResponseCodes.INVALID_LOGIN, "User is disabled")
+                        }
                         val si = SessionInfoAdmin(
-                            user!!.id,
+                            user.id,
                             user.isSuperAdmin
                         )
                         session.setVar(AdminSessionVars.VAR_USER, user)
@@ -120,25 +123,21 @@ class AdminLoginEp @Inject constructor(
         )
         val username = scram.handleClientFirstMessage(data)
         return if (username != null) {
-            try {
-                val scramData: Scram? = scramDbh.loadByUsername(dbc, username)
-                if (scramData != null) {
-                    session.setVar(AdminSessionVars.VAR_SCRAM_DATA, scramData)
-                    val ud = UserData(
-                        Base64.encodeBytes(scramData.salt, Base64.DONT_BREAK_LINES),
-                        scramData.iterations,
-                        Base64.encodeBytes(scramData.serverKey, Base64.DONT_BREAK_LINES),
-                        Base64.encodeBytes(scramData.storedKey, Base64.DONT_BREAK_LINES)
-                    )
-                    val first = scram.prepareFirstMessage(ud)
-                    session.setVar(AdminSessionVars.VAR_SCRAM_FUNC, scram)
-                    OkResponse(first)
-                } else {
-                    Thread.sleep(PAUSE_AFTER_UNSUCCESSFUL_LOGIN_MILLIS)
-                    ForgeResponse(AdminResponseCodes.INVALID_LOGIN, "Invalid Login")
-                }
-            } catch (e: SQLException) {
-                throw RuntimeException(e)
+            val scramData: Scram? = scramDbh.loadByUsername(dbc, username)
+            if (scramData != null) {
+                session.setVar(AdminSessionVars.VAR_SCRAM_DATA, scramData)
+                val ud = UserData(
+                    Base64.encodeBytes(scramData.salt, Base64.DONT_BREAK_LINES),
+                    scramData.iterations,
+                    Base64.encodeBytes(scramData.serverKey, Base64.DONT_BREAK_LINES),
+                    Base64.encodeBytes(scramData.storedKey, Base64.DONT_BREAK_LINES)
+                )
+                val first = scram.prepareFirstMessage(ud)
+                session.setVar(AdminSessionVars.VAR_SCRAM_FUNC, scram)
+                OkResponse(first)
+            } else {
+                Thread.sleep(PAUSE_AFTER_UNSUCCESSFUL_LOGIN_MILLIS)
+                ForgeResponse(AdminResponseCodes.INVALID_LOGIN, "Invalid Login")
             }
         } else {
             InvalidParameterValueResponse("Invalid data")

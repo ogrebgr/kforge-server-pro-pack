@@ -14,7 +14,9 @@ class AdminModule @Inject constructor(
     private val adminUsersListEp: AdminUsersListEp,
     private val adminUserLoadEp: AdminUserLoadEp,
     private val adminStoreDisableEp: AdminStoreDisableEp,
-    private val adminStoreSuperAdminEp: AdminStoreSuperAdminEp
+    private val adminStoreSuperAdminEp: AdminStoreSuperAdminEp,
+    private val adminChangePasswordEp: AdminChangePasswordEp,
+    private val adminLogoutEp: AdminLogoutEp
 ) : HttpModule {
     private val MODULE_SYSTEM_NAME = "admin"
     private val MODULE_VERSION_CODE = 1
@@ -29,6 +31,9 @@ class AdminModule @Inject constructor(
         ret.add(RouteImpl(HttpMethod.GET, "$PATH_PREFIX/user", adminUserLoadEp))
         ret.add(RouteImpl(HttpMethod.POST, "$PATH_PREFIX/admin_user_disable", adminStoreDisableEp))
         ret.add(RouteImpl(HttpMethod.POST, "$PATH_PREFIX/admin_user_super_admin", adminStoreSuperAdminEp))
+        ret.add(RouteImpl(HttpMethod.POST, "$PATH_PREFIX/admin_change_password", adminChangePasswordEp))
+        ret.add(RouteImpl(HttpMethod.POST, "$PATH_PREFIX/admin_change_password", adminChangePasswordEp))
+        ret.add(RouteImpl(HttpMethod.GET, "$PATH_PREFIX/logout", adminLogoutEp))
 
         return ret
     }

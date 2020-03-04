@@ -13,7 +13,7 @@ abstract class AdminEndpoint : ForgeEndpoint() {
     abstract fun handle(ctx: RequestContext, user: AdminUser): ForgeResponse
 
     @Throws(ResponseException::class)
-    override fun handle(ctx: RequestContext): ForgeResponse {
+    override fun handleForge(ctx: RequestContext): ForgeResponse {
         val session = ctx.session
         val user = session.getVar<AdminUser>(
             AdminSessionVars.VAR_USER

@@ -79,7 +79,7 @@ interface ScramDbh {
     ): Scram
 
     @Throws(SQLException::class)
-    fun changePassword(dbc: Connection, userId: Long, passwordData: ScramUtils.NewPasswordByteArrayData): Boolean
+    fun changePassword(dbc: Connection, userId: Int, passwordData: ScramUtils.NewPasswordByteArrayData): Boolean
 }
 
 
@@ -182,10 +182,25 @@ class ScramDbhImpl(private val tableName: String) :
 
     override fun changePassword(
         dbc: Connection,
-        userId: Long,
+        userId: Int,
         passwordData: ScramUtils.NewPasswordByteArrayData
     ): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        val sql = "UPDATE " + tableName + " SET " +
+                "salt = ?," +
+                "server_key = ?," +
+                "stored_key = ?," +
+                "iterations = ? " +
+                "WHERE \"user\" = ?"
+        dbc.prepareStatement(sql).use { psUpdate ->
+            psUpdate.setBytes(1, passwordData.salt)
+            psUpdate.setBytes(2, passwordData.serverKey)
+            psUpdate.setBytes(3, passwordData.storedKey)
+            psUpdate.setInt(4, passwordData.iterations)
+            psUpdate.setInt(5, userId)
+            val count = psUpdate.executeUpdate()
+            return count == 1
+        }
     }
 }
 

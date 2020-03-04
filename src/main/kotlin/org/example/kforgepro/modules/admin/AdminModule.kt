@@ -32,7 +32,6 @@ class AdminModule @Inject constructor(
         ret.add(RouteImpl(HttpMethod.POST, "$PATH_PREFIX/admin_user_disable", adminStoreDisableEp))
         ret.add(RouteImpl(HttpMethod.POST, "$PATH_PREFIX/admin_user_super_admin", adminStoreSuperAdminEp))
         ret.add(RouteImpl(HttpMethod.POST, "$PATH_PREFIX/admin_change_password", adminChangePasswordEp))
-        ret.add(RouteImpl(HttpMethod.POST, "$PATH_PREFIX/admin_change_password", adminChangePasswordEp))
         ret.add(RouteImpl(HttpMethod.GET, "$PATH_PREFIX/logout", adminLogoutEp))
 
         return ret

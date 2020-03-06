@@ -6,6 +6,7 @@ import ch.qos.logback.core.joran.spi.JoranException
 import com.bolyartech.forge.server.config.FileForgeServerConfigurationLoader
 import com.bolyartech.forge.server.config.ForgeConfigurationException
 import com.bolyartech.forge.server.config.ForgeServerConfiguration
+import com.bolyartech.forge.server.db.FileDbConfigurationLoader
 import com.bolyartech.forge.server.jetty.ForgeJettyConfiguration
 import com.bolyartech.forge.server.jetty.ForgeJettyConfigurationLoaderFile
 import org.apache.commons.cli.CommandLine
@@ -54,11 +55,19 @@ fun main(args: Array<String>) {
             exitProcess(1)
         }
 
-        val server = DaggerServerDaggerComponent.builder().dbDaggerModule(DbDaggerModule(configDir))
+        val dbConfigurationLoader = FileDbConfigurationLoader(configDir)
+        val dbConfig = try {
+            dbConfigurationLoader.load()
+        } catch (e: ForgeConfigurationException) {
+            logger.error("Cannot load DB conf")
+            exitProcess(1)
+        }
+
+        val server = DaggerServerDaggerComponent.builder().dbDaggerModule(DbDaggerModule(dbConfig))
             .serverModule(ServerModule(forgeConf.staticFilesDir)).build().provideServer()
 
         initLog(configDir, forgeConf.serverLogName)
-        server.start(conf)
+        server.start(conf, dbConfig)
     } else {
         logger.error("No configuration. Aborting.")
     }

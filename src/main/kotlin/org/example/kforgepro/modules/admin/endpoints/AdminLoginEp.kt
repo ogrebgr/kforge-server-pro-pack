@@ -68,14 +68,19 @@ class AdminLoginEp @Inject constructor(
         session: Session,
         data: String
     ): ForgeResponse? {
-        val scram = session.getVar<ScramServerFunctionality>(AdminSessionVars.VAR_SCRAM_FUNC)
+        val scram = gson.fromJson(
+            session.getVar<String>(AdminSessionVars.VAR_SCRAM_FUNC),
+            ScramServerFunctionalityImpl::class.java
+        )
         return if (scram != null) {
             if (scram.state == ScramServerFunctionality.State.PREPARED_FIRST) {
                 try {
                     val finalMsg = scram.prepareFinalMessage(data)
                     if (finalMsg != null) {
-                        val scramData: Scram = session.getVar(
-                            AdminSessionVars.VAR_SCRAM_DATA
+                        val scramData: Scram = gson.fromJson(
+                            session.getVar<String>(
+                                AdminSessionVars.VAR_SCRAM_DATA
+                            ), Scram::class.java
                         )
                         val user: AdminUser? = adminUserDbh.loadById(dbc, scramData.user)
                         if (user!!.isDisabled) {
@@ -125,7 +130,7 @@ class AdminLoginEp @Inject constructor(
         return if (username != null) {
             val scramData: Scram? = scramDbh.loadByUsername(dbc, username)
             if (scramData != null) {
-                session.setVar(AdminSessionVars.VAR_SCRAM_DATA, scramData)
+                session.setVar(AdminSessionVars.VAR_SCRAM_DATA, gson.toJson(scramData))
                 val ud = UserData(
                     Base64.encodeBytes(scramData.salt, Base64.DONT_BREAK_LINES),
                     scramData.iterations,
@@ -133,7 +138,7 @@ class AdminLoginEp @Inject constructor(
                     Base64.encodeBytes(scramData.storedKey, Base64.DONT_BREAK_LINES)
                 )
                 val first = scram.prepareFirstMessage(ud)
-                session.setVar(AdminSessionVars.VAR_SCRAM_FUNC, scram)
+                session.setVar(AdminSessionVars.VAR_SCRAM_FUNC, gson.toJson(scram))
                 OkResponse(first)
             } else {
                 Thread.sleep(PAUSE_AFTER_UNSUCCESSFUL_LOGIN_MILLIS)

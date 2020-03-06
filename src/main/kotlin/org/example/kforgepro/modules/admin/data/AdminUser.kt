@@ -1,18 +1,18 @@
 package org.example.kforgepro.modules.admin.data
 
 import setValue
+import java.io.Serializable
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
 import javax.inject.Inject
-
 
 data class AdminUser(
     val id: Int,
     val isDisabled: Boolean,
     val isSuperAdmin: Boolean,
     val name: String
-) {
+) : Serializable {
 
     companion object {
         const val PASSWORD_MIN_LENGTH = 6

@@ -36,8 +36,8 @@ class AdminUserLoadEp @Inject constructor(
             return ErrorResponse("")
         }
 
-        val user = adminUserDbh.loadById(dbc, userId)
-        if (user == null) {
+        val userTarget = adminUserDbh.loadById(dbc, userId)
+        if (userTarget == null) {
             return ForgeResponse(RESPONSE_CANNOT_FIND_USER, "1")
         }
 
@@ -49,14 +49,13 @@ class AdminUserLoadEp @Inject constructor(
         return OkResponse(
             gson.toJson(
                 AdminUserExportedView(
-                    user.id,
+                    userTarget.id,
                     aus.username,
-                    user.isDisabled,
-                    user.isSuperAdmin,
-                    user.name
+                    userTarget.isDisabled,
+                    userTarget.isSuperAdmin,
+                    userTarget.name
                 )
             )
         )
     }
-
 }

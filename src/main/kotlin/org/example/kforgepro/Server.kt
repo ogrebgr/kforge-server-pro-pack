@@ -13,6 +13,7 @@ import org.eclipse.jetty.server.session.JDBCSessionDataStoreFactory
 import org.example.kforgepro.dagger.InternalServerErrorHandler
 import org.example.kforgepro.dagger.NotFoundHandler
 import org.example.kforgepro.modules.admin.AdminModule
+import org.example.kforgepro.modules.user.UserModule
 import java.util.*
 import javax.inject.Inject
 import javax.servlet.http.HttpServlet
@@ -21,7 +22,7 @@ import javax.sql.DataSource
 class Server @Inject constructor(
     private val mainModule: MainModule,
     private val adminModule: AdminModule,
-
+    private val userModule: UserModule,
     @NotFoundHandler private val notFoundHandler: RouteHandler,
     @InternalServerErrorHandler private val internalServerError: RouteHandler
 ) {
@@ -59,6 +60,7 @@ class Server @Inject constructor(
         val modules = ArrayList<HttpModule>()
         modules.add(mainModule)
         modules.add(adminModule)
+        modules.add(userModule)
 
         return MainServlet(modules, notFoundHandler, internalServerError)
     }

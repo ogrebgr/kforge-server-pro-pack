@@ -9,13 +9,17 @@ import com.bolyartech.forge.server.response.forge.OkResponse
 import com.bolyartech.forge.server.route.RequestContext
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
-import org.example.kforgepro.dagger.UserBlowfishAuto
 import org.example.kforgepro.dagger.UserBlowfishFinal
 import org.example.kforgepro.modules.user.SessionInfoUser
 import org.example.kforgepro.modules.user.UserResponseCodes
-import org.example.kforgepro.modules.user.data.*
+import org.example.kforgepro.modules.user.UserSessionVars
+import org.example.kforgepro.modules.user.data.LoginType
+import org.example.kforgepro.modules.user.data.UserBlowfishDbh
+import org.example.kforgepro.modules.user.data.UserDbh
+import org.example.kforgepro.modules.user.data.UserScreenNameDbh
 import org.mindrot.jbcrypt.BCrypt
 import org.slf4j.LoggerFactory
+import java.io.Serializable
 import java.sql.Connection
 import javax.inject.Inject
 
@@ -61,6 +65,9 @@ class UserLoginBfEp @Inject constructor(
 
         val screenName = screenNameDbh.loadByUser(dbc, bu.user)
 
+        val session = ctx.session
+        session.setVar<Serializable>(UserSessionVars.VAR_USER, user)
+        session.setVar<Serializable>(UserSessionVars.VAR_LOGIN_TYPE, LoginType.NATIVE)
 
         return OkResponse(
             gson.toJson(

@@ -23,6 +23,14 @@ interface UserDbOps {
         username: String,
         passwordClearForm: String
     ): NewUserResult
+
+    @Throws(SQLException::class)
+    fun createNewNamedUserPostAuto(
+        dbc: Connection,
+        username: String,
+        passwordClearForm: String,
+        screenName: String?
+    ): NewUserResult
 }
 
 sealed class NewUserResult
@@ -73,6 +81,36 @@ class UserDbOpsImpl @Inject constructor(
         val user = userDbh.createNew(dbc, false, LoginType.NATIVE.getId())
         blowfishDbhAuto.createNew(dbc, user.id, username, BCrypt.hashpw(passwordClearForm, BCrypt.gensalt()))
 
+        dbc.commit()
+
+        return NewUserResultOK(user)
+    }
+
+    override fun createNewNamedUserPostAuto(
+        dbc: Connection,
+        username: String,
+        passwordClearForm: String,
+        screenName: String?
+    ): NewUserResult {
+
+        dbc.autoCommit = false
+        dbc.transactionIsolation = TRANSACTION_SERIALIZABLE
+        if (blowfishDbhAuto.usernameExists(dbc, username) || blowfishDbhFinal.usernameExists(dbc, username)) {
+            return NewUserResultError(isUsernameTaken = true, isScreenNameTaken = false)
+        }
+
+        if (screenName != null) {
+            if (screenNameDbh.isScreenNameTaken(dbc, screenName)) {
+                return NewUserResultError(isUsernameTaken = false, isScreenNameTaken = true)
+            }
+        }
+
+        val user = userDbh.createNew(dbc, false, LoginType.NATIVE.getId())
+        blowfishDbhFinal.createNew(dbc, user.id, username, BCrypt.hashpw(passwordClearForm, BCrypt.gensalt()))
+        blowfishDbhAuto.deleteByUser(dbc, user.id)
+        if (screenName != null) {
+            screenNameDbh.createNew(dbc, user.id, screenName)
+        }
         dbc.commit()
 
         return NewUserResultOK(user)

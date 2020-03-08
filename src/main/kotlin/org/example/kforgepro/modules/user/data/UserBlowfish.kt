@@ -37,6 +37,9 @@ interface UserBlowfishDbh {
     fun delete(dbc: Connection, id: Int): Int
 
     @Throws(SQLException::class)
+    fun deleteByUser(dbc: Connection, userId: Int): Int
+
+    @Throws(SQLException::class)
     fun usernameExists(dbc: Connection, username: String): Boolean
 }
 
@@ -49,10 +52,9 @@ class UserBlowfishDbhImpl @Inject constructor(private val tableName: String) : U
         """SELECT "user", "password" FROM "kforge_propack"."$tableName" WHERE username = ?"""
     private val SQL_SELECT_ALL =
         """SELECT "user", "username", "password", "username_lc" FROM "kforge_propack"."$tableName""""
-    private val SQL_UPDATE =
-        """UPDATE "kforge_propack"."$tableName" SET "user" = ?, "username" = ?, "password" = ?, "username_lc" = ? WHERE id = ?"""
     private val SQL_COUNT = """SELECT COUNT(id) FROM "kforge_propack"."$tableName""""
     private val SQL_DELETE = """DELETE FROM "kforge_propack"."$tableName" WHERE id = ?"""
+    private val SQL_DELETE_BY_USER = """DELETE FROM "kforge_propack"."$tableName" WHERE "user" = ?"""
 
     @Throws(SQLException::class)
     override fun createNew(
@@ -168,6 +170,13 @@ class UserBlowfishDbhImpl @Inject constructor(private val tableName: String) : U
     override fun delete(dbc: Connection, id: Int): Int {
         dbc.prepareStatement(SQL_DELETE).use {
             it.setValue(1, id)
+            return it.executeUpdate()
+        }
+    }
+
+    override fun deleteByUser(dbc: Connection, userId: Int): Int {
+        dbc.prepareStatement(SQL_DELETE_BY_USER).use {
+            it.setValue(1, userId)
             return it.executeUpdate()
         }
     }

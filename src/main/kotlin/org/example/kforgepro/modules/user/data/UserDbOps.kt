@@ -77,5 +77,4 @@ class UserDbOpsImpl @Inject constructor(
 
         return NewUserResultOK(user)
     }
-
 }

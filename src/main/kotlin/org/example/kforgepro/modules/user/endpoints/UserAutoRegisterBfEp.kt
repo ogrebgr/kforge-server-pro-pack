@@ -24,8 +24,6 @@ class UserAutoRegisterBfEp @Inject constructor(
 
     private val PARAM_INSTANCE_ID = "instance"
 
-    private val random = SecureRandom()
-
     private val gson = Gson()
 
     override fun handleForge(ctx: RequestContext, dbc: Connection): ForgeResponse {

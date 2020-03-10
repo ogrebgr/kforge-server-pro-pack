@@ -9,6 +9,7 @@ import com.bolyartech.forge.server.response.forge.OkResponse
 import com.bolyartech.forge.server.route.RequestContext
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import org.example.kforgepro.dagger.UserBlowfishAuto
 import org.example.kforgepro.dagger.UserBlowfishFinal
 import org.example.kforgepro.modules.user.SessionInfoUser
 import org.example.kforgepro.modules.user.UserResponseCodes
@@ -27,6 +28,7 @@ class UserLoginBfEp @Inject constructor(
     dbPool: DbPool,
     private val userDbh: UserDbh,
     @UserBlowfishFinal private val blowfishDbhFinal: UserBlowfishDbh,
+    @UserBlowfishAuto private val blowfishDbhAuto: UserBlowfishDbh,
     private val screenNameDbh: UserScreenNameDbh
 ) : ForgeDbEndpoint(dbPool) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
@@ -35,18 +37,25 @@ class UserLoginBfEp @Inject constructor(
 
     private val PARAM_USERNAME = "username"
     private val PARAM_PASSWORD = "password"
+    private val PARAM_MANUAL = "manual"
 
-    private val gson = Gson();
+    private val gson = Gson()
 
     override fun handleForge(ctx: RequestContext, dbc: Connection): ForgeResponse {
         val username = ctx.getFromPost(PARAM_USERNAME)
         val password = ctx.getFromPost(PARAM_PASSWORD)
+        val areManualCredential = ctx.getFromPost(PARAM_MANUAL) != null
 
         if (!Params.areAllPresent(username, password)) {
             return MissingParametersResponse.getInstance()
         }
 
-        val bu = blowfishDbhFinal.loadByUsername(dbc, username)
+        val bu = if (areManualCredential) {
+            blowfishDbhFinal.loadByUsername(dbc, username)
+        } else {
+            blowfishDbhAuto.loadByUsername(dbc, username)
+        }
+
         if (bu == null) {
             Thread.sleep(PAUSE_AFTER_UNSUCCESSFUL_LOGIN_MILLIS)
             return ForgeResponse(UserResponseCodes.INVALID_LOGIN, "Invalid login")

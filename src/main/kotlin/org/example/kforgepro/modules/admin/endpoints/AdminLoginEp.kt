@@ -96,7 +96,8 @@ class AdminLoginEp @Inject constructor(
                                 RokLogin(
                                     session.maxInactiveInterval,
                                     si,
-                                    finalMsg
+                                    finalMsg,
+                                    user.isSuperAdmin
                                 )
                             )
                         )
@@ -153,6 +154,7 @@ class AdminLoginEp @Inject constructor(
     data class RokLogin(
         @SerializedName("session_ttl") val sessionTtl: Int,
         @SerializedName("session_info") val sessionInfo: SessionInfoAdmin,
-        @SerializedName("final_message") val finalMessage: String
+        @SerializedName("final_message") val finalMessage: String,
+        @SerializedName("is_super_admin") val isSuperAdmin: Boolean
     )
 }

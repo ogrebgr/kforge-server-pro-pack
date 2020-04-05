@@ -225,6 +225,85 @@ ALTER TABLE ONLY kforge_propack.users ALTER COLUMN id SET DEFAULT nextval('kforg
 
 
 --
+-- Data for Name: admin_user_scram; Type: TABLE DATA; Schema: kforge_propack; Owner: postgres
+--
+
+COPY kforge_propack.admin_user_scram (id, "user", username, salt, server_key, stored_key, iterations, username_lc) FROM stdin;
+1	6	admin	\\x95c08655951915a574ad0f5eae6c16b6ee3cf0ea151b74db	\\xceecc190021da0a3821c7d5987f727eb82ba274f32752886d288ea2ea30fa59af64c2831c2e164db1ac248286675e990378f35dc25d6fe75748a8a2a87f9af36	\\x55076e4a552b3120cd764319c81aa2a50da999d41c9ec2051a901660401ad90b45b027c7988efbb42ead870c4b470cc7ca02382f904e984ba42c72206de89ef3	4096	admin
+\.
+
+
+--
+-- Data for Name: admin_users; Type: TABLE DATA; Schema: kforge_propack; Owner: postgres
+--
+
+COPY kforge_propack.admin_users (id, is_disabled, is_superadmin, name) FROM stdin;
+6	f	t	name
+\.
+
+
+--
+-- Data for Name: jettysessions; Type: TABLE DATA; Schema: kforge_propack; Owner: kforge_propack
+--
+
+COPY kforge_propack.jettysessions (sessionid, contextpath, virtualhost, lastnode, accesstime, lastaccesstime, createtime, cookietime, lastsavedtime, expirytime, maxinterval, map) FROM stdin;
+\.
+
+
+--
+-- Data for Name: user_blowfish; Type: TABLE DATA; Schema: kforge_propack; Owner: kforge_propack
+--
+
+COPY kforge_propack.user_blowfish ("user", username, password, username_lc) FROM stdin;
+\.
+
+
+--
+-- Data for Name: user_blowfish2; Type: TABLE DATA; Schema: kforge_propack; Owner: kforge_propack
+--
+
+COPY kforge_propack.user_blowfish2 ("user", username, password, username_lc) FROM stdin;
+\.
+
+
+--
+-- Data for Name: user_screen_names; Type: TABLE DATA; Schema: kforge_propack; Owner: kforge_propack
+--
+
+COPY kforge_propack.user_screen_names ("user", screen_name, screen_name_lc) FROM stdin;
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: kforge_propack; Owner: kforge_propack
+--
+
+COPY kforge_propack.users (id, is_disabled, login_type) FROM stdin;
+\.
+
+
+--
+-- Name: admin_user_scram_id_seq; Type: SEQUENCE SET; Schema: kforge_propack; Owner: postgres
+--
+
+SELECT pg_catalog.setval('kforge_propack.admin_user_scram_id_seq', 2, true);
+
+
+--
+-- Name: admin_users_id_seq; Type: SEQUENCE SET; Schema: kforge_propack; Owner: postgres
+--
+
+SELECT pg_catalog.setval('kforge_propack.admin_users_id_seq', 7, true);
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: kforge_propack; Owner: kforge_propack
+--
+
+SELECT pg_catalog.setval('kforge_propack.users_id_seq', 13, true);
+
+
+--
 -- Name: admin_user_scram admin_user_scram_pkey; Type: CONSTRAINT; Schema: kforge_propack; Owner: postgres
 --
 

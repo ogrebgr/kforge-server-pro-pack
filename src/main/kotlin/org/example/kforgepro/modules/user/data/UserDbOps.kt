@@ -52,38 +52,51 @@ class UserDbOpsImpl @Inject constructor(
         passwordClearForm: String,
         screenName: String
     ): NewUserResult {
+        try {
+            dbc.autoCommit = false
+            dbc.transactionIsolation = TRANSACTION_SERIALIZABLE
+            if (blowfishDbhAuto.usernameExists(dbc, username) || blowfishDbhFinal.usernameExists(dbc, username)) {
+                return NewUserResultError(isUsernameTaken = true, isScreenNameTaken = false)
+            }
 
-        dbc.autoCommit = false
-        dbc.transactionIsolation = TRANSACTION_SERIALIZABLE
-        if (blowfishDbhAuto.usernameExists(dbc, username) || blowfishDbhFinal.usernameExists(dbc, username)) {
-            return NewUserResultError(isUsernameTaken = true, isScreenNameTaken = false)
+            if (screenNameDbh.isScreenNameTaken(dbc, screenName)) {
+                return NewUserResultError(isUsernameTaken = false, isScreenNameTaken = true)
+            }
+
+            val user = userDbh.createNew(dbc, false, LoginType.NATIVE.getId())
+            blowfishDbhAuto.createNew(dbc, user.id, username, BCrypt.hashpw(passwordClearForm, BCrypt.gensalt()))
+            screenNameDbh.createNew(dbc, user.id, screenName)
+            dbc.commit()
+
+            return NewUserResultOK(user)
+        } catch (e: Exception) {
+            dbc.rollback()
+            throw e
+        } finally {
+            dbc.autoCommit = true
         }
-
-        if (screenNameDbh.isScreenNameTaken(dbc, screenName)) {
-            return NewUserResultError(isUsernameTaken = false, isScreenNameTaken = true)
-        }
-
-        val user = userDbh.createNew(dbc, false, LoginType.NATIVE.getId())
-        blowfishDbhAuto.createNew(dbc, user.id, username, BCrypt.hashpw(passwordClearForm, BCrypt.gensalt()))
-        screenNameDbh.createNew(dbc, user.id, screenName)
-        dbc.commit()
-
-        return NewUserResultOK(user)
     }
 
     override fun createNewAuto(dbc: Connection, username: String, passwordClearForm: String): NewUserResult {
-        dbc.autoCommit = false
-        dbc.transactionIsolation = TRANSACTION_SERIALIZABLE
+        try {
+            dbc.autoCommit = false
+            dbc.transactionIsolation = TRANSACTION_SERIALIZABLE
 
-        if (blowfishDbhAuto.usernameExists(dbc, username) || blowfishDbhFinal.usernameExists(dbc, username)) {
-            return NewUserResultError(isUsernameTaken = true, isScreenNameTaken = false)
+            if (blowfishDbhAuto.usernameExists(dbc, username) || blowfishDbhFinal.usernameExists(dbc, username)) {
+                return NewUserResultError(isUsernameTaken = true, isScreenNameTaken = false)
+            }
+            val user = userDbh.createNew(dbc, false, LoginType.NATIVE.getId())
+            blowfishDbhAuto.createNew(dbc, user.id, username, BCrypt.hashpw(passwordClearForm, BCrypt.gensalt()))
+
+            dbc.commit()
+
+            return NewUserResultOK(user)
+        } catch (e: Exception) {
+            dbc.rollback()
+            throw e
+        } finally {
+            dbc.autoCommit = true
         }
-        val user = userDbh.createNew(dbc, false, LoginType.NATIVE.getId())
-        blowfishDbhAuto.createNew(dbc, user.id, username, BCrypt.hashpw(passwordClearForm, BCrypt.gensalt()))
-
-        dbc.commit()
-
-        return NewUserResultOK(user)
     }
 
     override fun createNewNamedUserPostAuto(
@@ -93,26 +106,33 @@ class UserDbOpsImpl @Inject constructor(
         screenName: String?
     ): NewUserResult {
 
-        dbc.autoCommit = false
-        dbc.transactionIsolation = TRANSACTION_SERIALIZABLE
-        if (blowfishDbhAuto.usernameExists(dbc, username) || blowfishDbhFinal.usernameExists(dbc, username)) {
-            return NewUserResultError(isUsernameTaken = true, isScreenNameTaken = false)
-        }
-
-        if (screenName != null) {
-            if (screenNameDbh.isScreenNameTaken(dbc, screenName)) {
-                return NewUserResultError(isUsernameTaken = false, isScreenNameTaken = true)
+        try {
+            dbc.autoCommit = false
+            dbc.transactionIsolation = TRANSACTION_SERIALIZABLE
+            if (blowfishDbhAuto.usernameExists(dbc, username) || blowfishDbhFinal.usernameExists(dbc, username)) {
+                return NewUserResultError(isUsernameTaken = true, isScreenNameTaken = false)
             }
-        }
 
-        val user = userDbh.createNew(dbc, false, LoginType.NATIVE.getId())
-        blowfishDbhFinal.createNew(dbc, user.id, username, BCrypt.hashpw(passwordClearForm, BCrypt.gensalt()))
-        blowfishDbhAuto.deleteByUser(dbc, user.id)
-        if (screenName != null) {
-            screenNameDbh.createNew(dbc, user.id, screenName)
-        }
-        dbc.commit()
+            if (screenName != null) {
+                if (screenNameDbh.isScreenNameTaken(dbc, screenName)) {
+                    return NewUserResultError(isUsernameTaken = false, isScreenNameTaken = true)
+                }
+            }
 
-        return NewUserResultOK(user)
+            val user = userDbh.createNew(dbc, false, LoginType.NATIVE.getId())
+            blowfishDbhFinal.createNew(dbc, user.id, username, BCrypt.hashpw(passwordClearForm, BCrypt.gensalt()))
+            blowfishDbhAuto.deleteByUser(dbc, user.id)
+            if (screenName != null) {
+                screenNameDbh.createNew(dbc, user.id, screenName)
+            }
+            dbc.commit()
+
+            return NewUserResultOK(user)
+        } catch (e: java.lang.Exception) {
+            dbc.rollback()
+            throw e
+        } finally {
+            dbc.autoCommit = true
+        }
     }
 }

@@ -13,7 +13,6 @@ import org.example.kforgepro.modules.user.UserResponseCodes
 import org.example.kforgepro.modules.user.UserSessionVars
 import org.example.kforgepro.modules.user.data.*
 import java.io.Serializable
-import java.lang.IllegalStateException
 import java.sql.Connection
 import javax.inject.Inject
 
@@ -63,8 +62,10 @@ class UserRegisterBfEp @Inject constructor(dbPool: DbPool, private val userDbOps
         } else if (rez is NewUserResultError) {
             return if (rez.isUsernameTaken) {
                 ForgeResponse(UserResponseCodes.USERNAME_EXISTS, "Username exists")
-            } else {
+            } else if (rez.isScreenNameTaken) {
                 ForgeResponse(UserResponseCodes.SCREEN_NAME_EXISTS, "screen name taken")
+            } else {
+                ForgeResponse(-1)
             }
         } else {
             throw IllegalStateException()

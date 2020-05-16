@@ -28,14 +28,17 @@ class Server @Inject constructor(
 ) {
     private lateinit var forgeJetty: ForgeJetty
 
-    fun start(jettyConfig: ForgeJettyConfiguration, dbConfig: DbConfiguration) {
+    fun start(
+        jettyConfig: ForgeJettyConfiguration, dbConfig: DbConfiguration, isPathInfoEnabled: Boolean,
+        maxPathSegments: Int
+    ) {
         val dba: DatabaseAdaptor = DatabaseAdaptor()
         dba.datasource = createDataSource(dbConfig)
         val f: JDBCSessionDataStoreFactory = JDBCSessionDataStoreFactory()
         f.setDatabaseAdaptor(dba)
         f.setSessionTableSchema(JDBCSessionDataStore.SessionTableSchema())
 
-        forgeJetty = ForgeJetty(jettyConfig, createMainServlet(), f)
+        forgeJetty = ForgeJetty(jettyConfig, createMainServlet(isPathInfoEnabled, maxPathSegments))
         forgeJetty.start()
     }
 
@@ -56,12 +59,15 @@ class Server @Inject constructor(
         return comboPooledDataSource
     }
 
-    private fun createMainServlet(): HttpServlet {
+    private fun createMainServlet(
+        isPathInfoEnabled: Boolean,
+        maxPathSegments: Int
+    ): HttpServlet {
         val modules = ArrayList<HttpModule>()
         modules.add(mainModule)
         modules.add(adminModule)
         modules.add(userModule)
 
-        return MainServlet(modules, notFoundHandler, internalServerError)
+        return MainServlet(modules, isPathInfoEnabled, maxPathSegments, notFoundHandler, internalServerError)
     }
 }

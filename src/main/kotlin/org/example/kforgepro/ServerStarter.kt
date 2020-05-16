@@ -67,7 +67,7 @@ fun main(args: Array<String>) {
             .serverModule(ServerModule(forgeConf.staticFilesDir)).build().provideServer()
 
         initLog(configDir, forgeConf.serverLogName)
-        server.start(conf, dbConfig)
+        server.start(conf, dbConfig, forgeConf.isPathInfoEnabled, forgeConf.maxSlashesInPathInfo)
     } else {
         logger.error("No configuration. Aborting.")
     }

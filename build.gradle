@@ -29,7 +29,7 @@ dependencies {
     compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
     compile 'org.slf4j:slf4j-api:1.7.21'
     compile "ch.qos.logback:logback-classic:1.2.3"
-    compile 'com.bolyartech.forge.server:forge-server-jetty:8.0.0'
+    compile 'com.bolyartech.forge.server:forge-server-jetty:8.4.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation 'com.google.dagger:dagger:2.18'
     kapt 'com.google.dagger:dagger-compiler:2.18'
